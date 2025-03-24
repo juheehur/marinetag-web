@@ -1,0 +1,60 @@
+{
+  "name": "marinetag",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "build": "npx expo export:web"
+  },
+  "dependencies": {
+    "@expo-google-fonts/inter": "^0.2.3",
+    "@expo/metro-runtime": "~4.0.1",
+    "@expo/vector-icons": "^14.0.2",
+    "@react-native-async-storage/async-storage": "^1.24.0",
+    "@supabase/supabase-js": "^2.49.1",
+    "autoprefixer": "^10.4.21",
+    "base64-js": "^1.5.1",
+    "buffer": "^6.0.3",
+    "expo": "~52.0.40",
+    "expo-app-loading": "^2.1.1",
+    "expo-camera": "~16.0.18",
+    "expo-device": "^7.0.2",
+    "expo-file-system": "^18.0.12",
+    "expo-font": "^13.0.4",
+    "expo-image-manipulator": "^13.0.6",
+    "expo-image-picker": "~16.0.6",
+    "expo-linear-gradient": "^14.0.2",
+    "expo-localization": "^16.0.1",
+    "expo-location": "~18.0.8",
+    "expo-media-library": "~17.0.6",
+    "expo-splash-screen": "^0.29.22",
+    "expo-status-bar": "~2.0.1",
+    "i18n-js": "^4.5.1",
+    "i18next": "^24.2.3",
+    "nativewind": "^4.1.23",
+    "openai": "^4.89.0",
+    "postcss": "^8.5.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-i18next": "^15.4.1",
+    "react-native": "0.76.7",
+    "react-native-fs": "^2.20.0",
+    "react-native-url-polyfill": "^2.0.0",
+    "react-native-vision-camera": "^4.6.4",
+    "react-native-web": "~0.19.13",
+    "tailwindcss": "^3.3.2",
+    "@expo/webpack-config": "^19.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/react": "~18.3.12",
+    "typescript": "^5.3.3"
+  },
+  "private": true,
+  "resolutions": {
+    "expo": "~52.0.40"
+  }
+}
