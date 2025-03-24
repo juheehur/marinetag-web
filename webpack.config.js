@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const createExpoWebpackConfigAsync = require('@expo/webpack-config');
+const path = require('path');
 
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
@@ -7,17 +8,22 @@ module.exports = async function (env, argv) {
   // 환경 변수 설정
   config.plugins.push(
     new webpack.DefinePlugin({
-      'process.env.NEXT_PUBLIC_SUPABASE_URL': JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL),
-      'process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY': JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
-      'process.env.NEXT_PUBLIC_OPENAI_API_KEY': JSON.stringify(process.env.NEXT_PUBLIC_OPENAI_API_KEY),
+      'process.env': JSON.stringify(process.env),
       '__DEV__': env.mode === 'development'
     })
   );
 
-  // resolve 설정 추가
-  config.resolve.alias = {
-    ...config.resolve.alias,
-    './config/env': './src/config/env'
+  // resolve 설정 수정
+  config.resolve = {
+    ...config.resolve,
+    alias: {
+      ...config.resolve.alias,
+      '@config': path.resolve(__dirname, 'src/config'),
+    },
+    modules: [
+      path.resolve(__dirname, 'src'),
+      'node_modules'
+    ]
   };
 
   return config;

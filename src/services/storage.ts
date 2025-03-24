@@ -4,7 +4,7 @@ import { FishAnalysis } from './vision';
 import * as MediaLibrary from 'expo-media-library';
 import { Platform, Alert } from 'react-native';
 import * as FileSystem from 'expo-file-system';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../config/env';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@config/env';
 import { Buffer } from 'buffer';
 import { getDeviceId } from './device';
 

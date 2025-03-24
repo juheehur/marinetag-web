@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../config/env';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@config/env';
 import { Alert, Platform } from 'react-native';
 
 console.log('Supabase 클라이언트 초기화...');
