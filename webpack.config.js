@@ -16,21 +16,6 @@ module.exports = async function (env, argv) {
     })
   );
 
-  // 진입점에 환경 변수 설정 추가
-  if (!config.entry) {
-    config.entry = [];
-  }
-  if (Array.isArray(config.entry)) {
-    config.entry.unshift(path.resolve(__dirname, 'src/config/env.ts'));
-  } else if (typeof config.entry === 'object') {
-    Object.keys(config.entry).forEach(key => {
-      const entry = config.entry[key];
-      if (Array.isArray(entry)) {
-        entry.unshift(path.resolve(__dirname, 'src/config/env.ts'));
-      }
-    });
-  }
-
   // resolve 설정 강화
   config.resolve = {
     ...config.resolve,
