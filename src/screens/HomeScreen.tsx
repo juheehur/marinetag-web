@@ -29,7 +29,7 @@ import { getFishPhotos, FishPhoto, uploadImageToBucket, getAllFishImages, getFis
 import { useTranslation } from '../i18n';
 import { SettingsScreen } from './SettingsScreen';
 import { analyzeFishImage } from '../services/vision';
-import { SUPABASE_ANON_KEY } from '@config/env';
+import { SUPABASE_ANON_KEY } from '../config/env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');

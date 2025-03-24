@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { OPENAI_API_KEY } from '@config/env';
+import { OPENAI_API_KEY } from '../config/env';
 import { getCurrentLanguage } from '../i18n';
 
 const openai = new OpenAI({

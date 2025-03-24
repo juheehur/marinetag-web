@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
 
-  // 환경 변수 설정 - 개별적으로 명시
+  // 환경 변수 설정
   config.plugins.push(
     new webpack.DefinePlugin({
       'process.env.NEXT_PUBLIC_SUPABASE_URL': JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL),
@@ -16,21 +16,10 @@ module.exports = async function (env, argv) {
     })
   );
 
-  // resolve 설정 강화
+  // 간소화된 resolve 설정
   config.resolve = {
     ...config.resolve,
-    alias: {
-      ...config.resolve.alias,
-      '@config': path.resolve(__dirname, 'src/config'),
-      '../config/env': path.resolve(__dirname, 'src/config/env.ts'),
-      './config/env': path.resolve(__dirname, 'src/config/env.ts'),
-      'config/env': path.resolve(__dirname, 'src/config/env.ts')
-    },
-    modules: [
-      path.resolve(__dirname, 'src'),
-      'node_modules'
-    ],
-    extensions: ['.web.tsx', '.web.ts', '.tsx', '.ts', '.web.jsx', '.web.js', '.jsx', '.js']
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
   };
 
   return config;
