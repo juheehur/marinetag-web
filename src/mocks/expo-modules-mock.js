@@ -4,7 +4,7 @@
  */
 
 // EventEmitter 모의 구현
-class EventEmitter {
+export class EventEmitter {
   constructor() {
     this.listeners = {};
   }
@@ -33,70 +33,107 @@ class EventEmitter {
   }
 }
 
+// NativeModule 클래스 구현
+export class NativeModule {
+  constructor(moduleName) {
+    this.__expo_module_name__ = moduleName;
+  }
+}
+
 // NativeModulesProxy 모의 구현
-const NativeModulesProxy = new Proxy({}, {
+export const NativeModulesProxy = new Proxy({}, {
   get: function(target, prop) {
     // 모든 모듈이 있는 것처럼 동작하고 기본 구현 제공
-    return {
-      __expo_module_name__: prop,
-      addListener: () => ({ remove: () => {} }),
-      removeListeners: () => {},
-      // 모듈별 추가 메서드를 여기에 구현할 수 있습니다
-    };
+    if (!target[prop]) {
+      target[prop] = new NativeModule(prop);
+    }
+    return target[prop];
   }
 });
 
-// 다른 필요한 모의 객체들
-const SharedObject = {
+// 가장 자주 사용되는 Expo 모듈들을 미리 정의
+export const ExpoModulesCore = {
+  NativeModulesProxy,
+  EventEmitter,
+  NativeModule
+};
+
+// SharedObject 모의 구현
+export const SharedObject = {
   create: () => ({}),
   retain: () => {},
   release: () => {},
 };
 
-const getViewManagerConfig = () => ({});
-const requireNativeViewManager = () => () => null;
+// SharedRef 모의 구현
+export class SharedRef {
+  constructor(value) {
+    this.value = value;
+  }
+  
+  get current() {
+    return this.value;
+  }
+  
+  release() {}
+}
 
-// 공통 오류 메시지 함수
-const createUnsupportedError = (methodName) => 
+// 뷰 관련 유틸리티
+export const getViewManagerConfig = (name) => ({
+  name,
+  // 기본 속성들
+  propTypes: {},
+  directEventTypes: {},
+});
+
+export const requireNativeViewManager = () => () => null;
+
+// 오류 생성 헬퍼
+export const createUnsupportedError = (methodName) => 
   new Error(`${methodName}는 웹 환경에서 지원되지 않습니다.`);
 
 // UUID 모의 구현
-const uuid = {
+export const uuid = {
   v1: () => 'web-mock-uuid-v1-' + Math.random().toString(36).substring(2),
   v4: () => 'web-mock-uuid-v4-' + Math.random().toString(36).substring(2)
 };
 
-// 웹에서 Expo 모듈 등록을 위한 빈 함수
-const registerWebModule = () => {};
-const useReleasingSharedObject = () => null;
+// Expo 환경 관련 함수
+export const isRunningInExpoGo = false;
+export const registerWebModule = () => {};
+export const useReleasingSharedObject = () => null;
 
-// 오류를 던지지 않는 빈 함수들
-const noopFn = () => {};
+// 추가 네이티브 모듈들의 모의 구현
+export const Image = {
+  getSize: (uri, success, failure) => {
+    const img = new window.Image();
+    img.onload = () => { success(img.width, img.height); };
+    img.onerror = failure;
+    img.src = uri;
+  },
+  prefetch: () => Promise.resolve()
+};
 
-// 기본 내보내기
-module.exports = {
-  // 클래스
-  EventEmitter,
-  
-  // 주요 객체
+export const Camera = {
+  Constants: {
+    Type: { front: 'front', back: 'back' },
+    FlashMode: { on: 'on', off: 'off', auto: 'auto', torch: 'torch' }
+  }
+};
+
+// default export는 동시에 모든 named exports를 포함
+export default {
   NativeModulesProxy,
-  
-  // 유틸리티 함수
+  EventEmitter,
+  SharedObject,
+  SharedRef,
   getViewManagerConfig,
   requireNativeViewManager,
   createUnsupportedError,
-  
-  // 네이티브 브리지 유틸리티
-  SharedObject,
   uuid,
-  
-  // 웹 관련
+  isRunningInExpoGo,
   registerWebModule,
   useReleasingSharedObject,
-  
-  // 기본 빈 구현
-  default: {
-    NativeModulesProxy,
-    EventEmitter
-  }
+  Image,
+  Camera
 }; 

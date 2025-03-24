@@ -16,17 +16,32 @@ module.exports = async function (env, argv) {
     })
   );
 
-  // 모듈 mocking 설정
+  // 모듈 대체 설정 강화
+  config.plugins.push(
+    // 모듈 요청 패턴에 따라 특정 모듈을 모의 구현으로 대체
+    new webpack.NormalModuleReplacementPlugin(
+      /expo-modules-core\/build\/NativeModulesProxy/,
+      path.resolve(__dirname, 'src/mocks/expo-modules-core.js')
+    )
+  );
+
   config.plugins.push(
     new webpack.NormalModuleReplacementPlugin(
       /expo-modules-core/,
       (resource) => {
-        if (resource.request.includes("NativeModulesProxy") || 
-            resource.request.includes("EventEmitter")) {
-          resource.request = path.resolve(__dirname, 'src/mocks/expo-modules-mock.js');
+        if (resource.request === 'expo-modules-core') {
+          resource.request = path.resolve(__dirname, 'src/mocks/expo-modules-core.js');
         }
       }
     )
+  );
+
+  // 웹 환경에서 사용할 수 없는 네이티브 기능 모의 구현으로 대체
+  config.plugins.push(
+    new webpack.ProvidePlugin({
+      'NativeModules': ['react-native-web', 'NativeModules'],
+      'Platform': ['react-native-web', 'Platform']
+    })
   );
 
   // React Native Web 호환성을 위한 별칭 추가
@@ -45,7 +60,8 @@ module.exports = async function (env, argv) {
       'expo-file-system': 'expo-file-system/build/Browser',
       'expo-font': 'expo-font/build/Browser',
       // 문제가 발생하는 모듈에 대한 mock 구현 추가
-      'expo-modules-core': path.resolve(__dirname, 'src/mocks/expo-modules-mock.js'),
+      'expo-modules-core': path.resolve(__dirname, 'src/mocks/expo-modules-core.js'),
+      'expo-modules-core/NativeModulesProxy': path.resolve(__dirname, 'src/mocks/expo-modules-core.js'),
     },
     fallback: {
       ...config.resolve.fallback,
@@ -53,6 +69,20 @@ module.exports = async function (env, argv) {
       'stream': require.resolve('stream-browserify'),
       'path': require.resolve('path-browserify')
     }
+  };
+
+  // 웹 환경에서 지원되지 않는 네이티브 모듈 무시
+  config.module = {
+    ...config.module,
+    rules: [
+      ...config.module.rules,
+      {
+        test: /\.(tsx|ts|jsx|js|mjs)$/,
+        resolve: {
+          fullySpecified: false
+        }
+      }
+    ]
   };
 
   return config;

@@ -710,9 +710,19 @@ const getPublicUrl = (path: string): string => {
   return `${SUPABASE_URL}/storage/v1/object/public/fish-images/${path}?t=${timestamp}`;
 };
 
-// 앱 시작 시 버킷 확인
-export const initializeStorage = async (): Promise<void> => {
+// 웹 환경인지 확인하는 함수 추가
+const isWeb = () => typeof window !== 'undefined' && !window.navigator.userAgent.includes('Expo');
+
+// 웹 환경에서의 대체 구현 함수
+export const initializeStorage = async () => {
   try {
+    // 웹 환경에서는 간소화된 구현 사용
+    if (isWeb()) {
+      console.log('웹 환경에서 실행 중입니다. 간소화된 스토리지 구현을 사용합니다.');
+      return true;
+    }
+    
+    // 나머지 네이티브 전용 코드는 그대로 유지
     const bucketsReady = await ensurePhotosBucketExists();
     if (bucketsReady) {
       console.log('스토리지 버킷 초기화 완료');
@@ -721,6 +731,7 @@ export const initializeStorage = async (): Promise<void> => {
     }
   } catch (error) {
     console.error('스토리지 초기화 오류:', error);
+    return false;
   }
 };
 
